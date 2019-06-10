@@ -1,0 +1,114 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="banco-mexico">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Banco México: [[currency]], [[amount]], [[max_amount]]!</h2>
+    <paper-input id="ingresaBMex" label="Ingresa Dinero"></paper-input>
+    <paper-button on-tap="_ingresaDinero">Ingresa Dinero</paper-button>
+    <paper-input id="retiraBMex" label="Retira Dinero"></paper-input>
+    <paper-button on-tap="_retiraDinero">Retira Dinero</paper-button>
+  </template>
+
+  <script>
+    /**
+     * `banco-mexico`
+     * &#34;Banco app&#34;
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class BancoMexico extends Polymer.Element {
+      static get is() { return 'banco-mexico'; }
+      static get properties() {
+        return {
+          currency: {
+            type: String,
+            value: 'MXN',
+            readyOnly: true
+          },
+          amount: {
+            type: Number,
+            value: 0,
+            notify: true
+          },
+          max_amount: {
+            type: Number,
+            value: 2000,
+            notify: true
+          }
+        };
+      }
+      _ingresaDinero() {
+        console.log(this.max_amount);
+        //console.log(this.$.ingresaBMex.value);
+        if (Math.sign(this.$.ingresaBMex.value) === 1) {
+          if (this.amount < this.max_amount) {
+            this.amount += parseInt(this.$.ingresaBMex.value);
+            this.dispatchEvent(new CustomEvent('success', {
+              detail: {
+                isOnDOM: true,
+                message: 'Banco México: se ha ingresado dinero a la cuenta por el monto de: ' + this.$.ingresaBMex.value + ' ' + this.currency,
+              }
+            }));
+          } else {
+            console.log("el maximo monto supera los 2000");
+            this.dispatchEvent(new CustomEvent('error', {
+              detail: {
+                isOnDOM: true,
+                message: 'Banco México: se ha producido un error el máximo monto supera los 2000' + ' ' + this.currency,
+              }
+            }));
+          }
+        } else {
+          console.log("0 o - error");
+          this.dispatchEvent(new CustomEvent('error', {
+            detail: {
+              isOnDOM: true,
+              message: 'Banco México: se ha producido un error la cantidad ingresada es erronea',
+            }
+          }));
+        }
+      }
+      _retiraDinero() {
+        console.log(this.amount);
+        //console.log(this.$.retiraBMex.value);
+        if (Math.sign(this.$.retiraBMex.value) === 1) {
+          if (this.$.retiraBMex.value <= this.max_amount && this.amount > 0) {
+            //if (!(this.$.retiraBMex.value > this.amount)) {
+            this.amount -= parseInt(this.$.retiraBMex.value);
+            this.dispatchEvent(new CustomEvent('success', {
+              detail: {
+                isOnDOM: true,
+                message: 'Banco México: se ha retirado dinero a la cuenta por el monto de: ' + this.$.retiraBMex.value + ' ' + this.currency,
+              }
+            }));
+          } else {
+            console.log("el monto supera los 2000")
+            this.dispatchEvent(new CustomEvent('error', {
+              detail: {
+                isOnDOM: true,
+                message: 'Banco México: se ha producido un error no hay suficiente saldo para retirar',
+              }
+            }));
+          }
+        } else {
+          console.log("0 o - error");
+          this.dispatchEvent(new CustomEvent('error', {
+            detail: {
+              isOnDOM: true,
+              message: 'Banco México: se ha producido un error la cantidad retirada es erronea',
+            }
+          }));
+        }
+      }
+    }
+
+    window.customElements.define(BancoMexico.is, BancoMexico);
+  </script>
+</dom-module>

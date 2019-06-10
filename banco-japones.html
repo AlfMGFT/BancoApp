@@ -1,0 +1,114 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="banco-japones">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Banco Japones: [[currency]], [[amount]], [[max_amount]]!</h2>
+    <paper-input id="ingresaBJap" label="Ingresa Dinero"></paper-input>
+    <paper-button on-tap="_ingresaDinero">Ingresa Dinero</paper-button>
+    <paper-input id="retiraBJap" label="Retira Dinero"></paper-input>
+    <paper-button on-tap="_retiraDinero">Retira Dinero</paper-button>
+  </template>
+
+  <script>
+    /**
+     * `banco-japones`
+     * &#34;Banco app&#34;
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class BancoJapones extends Polymer.Element {
+      static get is() { return 'banco-japones'; }
+      static get properties() {
+        return {
+          currency: {
+            type: String,
+            value: 'YEN',
+            readyOnly: true
+          },
+          amount: {
+            type: Number,
+            value: 0,
+            notify: true
+          },
+          max_amount: {
+            type: Number,
+            value: 2000,
+            notify: true
+          }
+        };
+      }
+      _ingresaDinero() {
+        console.log(this.max_amount);
+        //console.log(this.$.ingresaBJap.value);
+        if (Math.sign(this.$.ingresaBJap.value) === 1) {
+          if (this.amount < this.max_amount) {
+            this.amount += parseInt(this.$.ingresaBJap.value);
+            this.dispatchEvent(new CustomEvent('success', {
+              detail: {
+                isOnDOM: true,
+                message: 'Banco Japones: se ha ingresado dinero a la cuenta por el monto de: ' + this.$.ingresaBJap.value + ' ' + this.currency,
+              }
+            }));
+          } else {
+            console.log("el maximo monto supera los 2000");
+            this.dispatchEvent(new CustomEvent('error', {
+              detail: {
+                isOnDOM: true,
+                message: 'Banco Japones: se ha producido un error el máximo monto supera los 2000' + ' ' + this.currency,
+              }
+            }));
+          }
+        } else {
+          console.log("0 o - error");
+          this.dispatchEvent(new CustomEvent('error', {
+            detail: {
+              isOnDOM: true,
+              message: 'Banco Japones: se ha producido un error la cantidad ingresada es erronea',
+            }
+          }));
+        }
+      }
+      _retiraDinero() {
+        console.log(this.amount);
+        //console.log(this.$.retiraBJap.value);
+        if (Math.sign(this.$.retiraBJap.value) === 1) {
+          if (this.$.retiraBJap.value <= this.max_amount && this.amount > 0) {
+            //if (!(this.$.retiraBJap.value > this.amount)) {
+            this.amount -= parseInt(this.$.retiraBJap.value);
+            this.dispatchEvent(new CustomEvent('success', {
+              detail: {
+                isOnDOM: true,
+                message: 'Banco Japones: se ha retirado dinero a la cuenta por el monto de: ' + this.$.retiraBJap.value + ' ' + this.currency,
+              }
+            }));
+          } else {
+            console.log("el monto supera los 2000")
+            this.dispatchEvent(new CustomEvent('error', {
+              detail: {
+                isOnDOM: true,
+                message: 'Banco Japones: se ha producido un error no hay suficiente saldo para retirar',
+              }
+            }));
+          }
+        } else {
+          console.log("0 o - error");
+          this.dispatchEvent(new CustomEvent('error', {
+            detail: {
+              isOnDOM: true,
+              message: 'Banco Japones: se ha producido un error la cantidad retirada es erronea',
+            }
+          }));
+        }
+      }
+    }
+
+    window.customElements.define(BancoJapones.is, BancoJapones);
+  </script>
+</dom-module>

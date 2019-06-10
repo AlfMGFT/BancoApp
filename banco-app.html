@@ -1,0 +1,82 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="./banco-chino.html">
+<link rel="import" href="./banco-coreano.html">
+<link rel="import" href="./banco-japones.html">
+<link rel="import" href="./banco-mexico.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<dom-module id="banco-app">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Bienvenido Alfredo tu numero de cuenta 56581111!</h2>
+    <banco-chino on-success="_addTransaccion" on-error="_addError"></banco-chino>
+    <banco-coreano on-success="_addTransaccion" on-error="_addError"></banco-coreano>
+    <banco-japones on-success="_addTransaccion" on-error="_addError"></banco-japones>
+    <banco-mexico id="events" on-success="_addTransaccion" on-error="_addError"></banco-mexico>
+    <h1>TRANSACCION</h1>
+    <template is="dom-repeat" items="[[transacciones]]">
+      <p>[[item]]</p>
+    </template>
+    <h1>ERROR</h1>
+    <template is="dom-repeat" items="[[error]]">
+      <p>[[item]]</p>
+    </template>
+
+  </template>
+
+  <script>
+    /**
+     * `banco-app`
+     * &#34;Banco app&#34;
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class BancoApp extends Polymer.Element {
+      static get is() { return 'banco-app'; }
+      static get properties() {
+        return {
+          transacciones: {
+            type: Array,
+            value: () => {
+              return [];
+            }
+          },
+          error: {
+            type: Array,
+            value: () => {
+              return [];
+            }
+          },
+        };
+      }
+      /*connectedCallback() {
+        super.connectedCallback();
+        this.$.events.addEventListener('success', e => {
+          console.log(e.detail.message);
+          this.push('transacciones', e.detail.message);
+        })
+        this.$.events.addEventListener('error', e => {
+          console.log(e.detail.message);
+          this.push('error', e.detail.message);
+        })
+
+      }*/
+      _addTransaccion(e){
+        console.log("Event", e.detail);
+        this.push('transacciones', e.detail.message);
+      }
+      _addError(e){
+        console.log("Event", e.detail);
+        this.push('error', e.detail.message);
+      }
+    }
+
+    window.customElements.define(BancoApp.is, BancoApp);
+  </script>
+</dom-module>
