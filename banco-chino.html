@@ -48,7 +48,7 @@
         console.log(this.max_amount);
         //console.log(this.$.ingresaBChi.value);
         if (Math.sign(this.$.ingresaBChi.value) === 1) {
-          if (this.amount < this.max_amount) {
+          if (this.$.ingresaBChi.value <= (this.max_amount - this.amount)) {
             this.amount += parseInt(this.$.ingresaBChi.value);
             this.dispatchEvent(new CustomEvent('success', {
               detail: {
@@ -79,8 +79,7 @@
         console.log(this.amount);
         //console.log(this.$.retiraBChi.value);
         if (Math.sign(this.$.retiraBChi.value) === 1) {
-          if (this.$.retiraBChi.value <= this.max_amount && this.amount > 0) {
-            //if (!(this.$.retiraBChi.value > this.amount)) {
+          if (this.$.retiraBChi.value <= this.amount && this.amount > 0) {
             this.amount -= parseInt(this.$.retiraBChi.value);
             this.dispatchEvent(new CustomEvent('success', {
               detail: {
