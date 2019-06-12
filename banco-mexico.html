@@ -2,16 +2,19 @@
 
 <dom-module id="banco-mexico">
   <template>
-    <style>
+    <style include="shared-module-components">
       :host {
         display: block;
       }
+
+      
     </style>
-    <h2>Banco México: [[currency]], [[amount]], [[max_amount]]!</h2>
-    <paper-input id="ingresaBMex" label="Ingresa Dinero"></paper-input>
-    <paper-button on-tap="_ingresaDinero">Ingresa Dinero</paper-button>
-    <paper-input id="retiraBMex" label="Retira Dinero"></paper-input>
-    <paper-button on-tap="_retiraDinero">Retira Dinero</paper-button>
+    <iron-image class="example-sizing-cover" sizing="contain" position="left" src="https://upload.wikimedia.org/wikipedia/commons/f/fc/Flag_of_Mexico.svg"></iron-image>
+    <h2 class="h2--general--style">Banco México: [[currency]], [[amount]], [[max_Amount]]!</h2>
+    <paper-input id="ingresaBMex" value="{{ingresaBMex::input}}" label="Ingresa Dinero"></paper-input>
+    <paper-button class="--style--buttoni" class="--style--button" on-tap="_ingresaDinero">Ingresa Dinero</paper-button>
+    <paper-input id="retiraBMex" value="{{retiraBMex::input}}" label="Retira Dinero"></paper-input>
+    <paper-button class="--style--buttonr" on-tap="_retiraDinero">Retira Dinero</paper-button>
   </template>
 
   <script>
@@ -37,7 +40,7 @@
             value: 0,
             notify: true
           },
-          max_amount: {
+          max_Amount: {
             type: Number,
             value: 2000,
             notify: true
@@ -45,28 +48,15 @@
         };
       }
       _ingresaDinero() {
-        console.log((this.max_amount - this.amount));
-        //console.log(this.$.ingresaBMex.value);
-        if (Math.sign(this.$.ingresaBMex.value) === 1) {
-          if (this.$.ingresaBMex.value <= (this.max_amount - this.amount)) {
-            this.amount += parseInt(this.$.ingresaBMex.value);
-            this.dispatchEvent(new CustomEvent('success', {
-              detail: {
-                isOnDOM: true,
-                message: 'Banco México: se ha ingresado dinero a la cuenta por el monto de: ' + this.$.ingresaBMex.value + ' ' + this.currency,
-              }
-            }));
-          } else {
-            console.log("el maximo monto supera los 2000");
-            this.dispatchEvent(new CustomEvent('error', {
-              detail: {
-                isOnDOM: true,
-                message: 'Banco México: se ha producido un error el máximo monto supera los 2000' + ' ' + this.currency,
-              }
-            }));
-          }
+        if (this.ingresaBMex > 0 && this.ingresaBMex <= (this.max_Amount - this.amount)) {
+          this.amount += parseInt(this.ingresaBMex);
+          this.dispatchEvent(new CustomEvent('success', {
+            detail: {
+              isOnDOM: true,
+              message: 'Banco México: se ha ingresado dinero a la cuenta por el monto de: ' + this.ingresaBMex + ' ' + this.currency,
+            }
+          }));
         } else {
-          console.log("0 o - error");
           this.dispatchEvent(new CustomEvent('error', {
             detail: {
               isOnDOM: true,
@@ -76,28 +66,15 @@
         }
       }
       _retiraDinero() {
-        console.log(this.amount);
-        //console.log(this.$.retiraBMex.value);
-        if (Math.sign(this.$.retiraBMex.value) === 1) {
-          if (this.$.retiraBMex.value <= this.amount && this.amount > 0) {
-            this.amount -= parseInt(this.$.retiraBMex.value);
-            this.dispatchEvent(new CustomEvent('success', {
-              detail: {
-                isOnDOM: true,
-                message: 'Banco México: se ha retirado dinero a la cuenta por el monto de: ' + this.$.retiraBMex.value + ' ' + this.currency,
-              }
-            }));
-          } else {
-            console.log("el monto supera los 2000")
-            this.dispatchEvent(new CustomEvent('error', {
-              detail: {
-                isOnDOM: true,
-                message: 'Banco México: se ha producido un error no hay suficiente saldo para retirar',
-              }
-            }));
-          }
+        if (this.retiraBMex <= this.amount && this.amount > 0) {
+          this.amount -= parseInt(this.retiraBMex);
+          this.dispatchEvent(new CustomEvent('success', {
+            detail: {
+              isOnDOM: true,
+              message: 'Banco México: se ha retirado dinero a la cuenta por el monto de: ' + this.retiraBMex + ' ' + this.currency,
+            }
+          }));
         } else {
-          console.log("0 o - error");
           this.dispatchEvent(new CustomEvent('error', {
             detail: {
               isOnDOM: true,

@@ -2,16 +2,17 @@
 
 <dom-module id="banco-japones">
   <template>
-    <style>
+    <style include="shared-module-components">
       :host {
         display: block;
       }
     </style>
-    <h2>Banco Japones: [[currency]], [[amount]], [[max_amount]]!</h2>
-    <paper-input id="ingresaBJap" label="Ingresa Dinero"></paper-input>
-    <paper-button on-tap="_ingresaDinero">Ingresa Dinero</paper-button>
-    <paper-input id="retiraBJap" label="Retira Dinero"></paper-input>
-    <paper-button on-tap="_retiraDinero">Retira Dinero</paper-button>
+    <iron-image class="example-sizing-cover" sizing="contain" position="left" src="https://upload.wikimedia.org/wikipedia/commons/9/9e/Flag_of_Japan.svg"></iron-image>
+    <h2 class="h2--general--style">Banco Japones: [[currency]], [[amount]], [[max_Amount]]!</h2>
+    <paper-input id="ingresaBJap" value="{{ingresaBJap::input}}" label="Ingresa Dinero"></paper-input>
+    <paper-button class="--style--buttoni" class="--style--button" on-tap="_ingresaDinero">Ingresa Dinero</paper-button>
+    <paper-input id="retiraBJap" value="{{retiraBJap::input}}" label="Retira Dinero"></paper-input>
+    <paper-button class="--style--buttonr" on-tap="_retiraDinero">Retira Dinero</paper-button>
   </template>
 
   <script>
@@ -37,7 +38,7 @@
             value: 0,
             notify: true
           },
-          max_amount: {
+          max_Amount: {
             type: Number,
             value: 2000,
             notify: true
@@ -45,28 +46,15 @@
         };
       }
       _ingresaDinero() {
-        console.log(this.max_amount);
-        //console.log(this.$.ingresaBJap.value);
-        if (Math.sign(this.$.ingresaBJap.value) === 1) {
-          if (this.$.ingresaBJap.value <= (this.max_amount - this.amount)) {
-            this.amount += parseInt(this.$.ingresaBJap.value);
-            this.dispatchEvent(new CustomEvent('success', {
-              detail: {
-                isOnDOM: true,
-                message: 'Banco Japones: se ha ingresado dinero a la cuenta por el monto de: ' + this.$.ingresaBJap.value + ' ' + this.currency,
-              }
-            }));
-          } else {
-            console.log("el maximo monto supera los 2000");
-            this.dispatchEvent(new CustomEvent('error', {
-              detail: {
-                isOnDOM: true,
-                message: 'Banco Japones: se ha producido un error el máximo monto supera los 2000' + ' ' + this.currency,
-              }
-            }));
-          }
+        if (this.ingresaBJap > 0 && this.ingresaBJap <= (this.max_Amount - this.amount)) {
+          this.amount += parseInt(this.ingresaBJap);
+          this.dispatchEvent(new CustomEvent('success', {
+            detail: {
+              isOnDOM: true,
+              message: 'Banco Japones: se ha ingresado dinero a la cuenta por el monto de: ' + this.ingresaBJap + ' ' + this.currency,
+            }
+          }));
         } else {
-          console.log("0 o - error");
           this.dispatchEvent(new CustomEvent('error', {
             detail: {
               isOnDOM: true,
@@ -76,28 +64,15 @@
         }
       }
       _retiraDinero() {
-        console.log(this.amount);
-        //console.log(this.$.retiraBJap.value);
-        if (Math.sign(this.$.retiraBJap.value) === 1) {
-          if (this.$.retiraBJap.value <= this.amount && this.amount > 0) {
-            this.amount -= parseInt(this.$.retiraBJap.value);
-            this.dispatchEvent(new CustomEvent('success', {
-              detail: {
-                isOnDOM: true,
-                message: 'Banco Japones: se ha retirado dinero a la cuenta por el monto de: ' + this.$.retiraBJap.value + ' ' + this.currency,
-              }
-            }));
-          } else {
-            console.log("el monto supera los 2000")
-            this.dispatchEvent(new CustomEvent('error', {
-              detail: {
-                isOnDOM: true,
-                message: 'Banco Japones: se ha producido un error no hay suficiente saldo para retirar',
-              }
-            }));
-          }
+        if (this.retiraBJap <= this.amount && this.amount > 0) {
+          this.amount -= parseInt(this.retiraBJap);
+          this.dispatchEvent(new CustomEvent('success', {
+            detail: {
+              isOnDOM: true,
+              message: 'Banco Japones: se ha retirado dinero a la cuenta por el monto de: ' + this.$.retiraBJap.value + ' ' + this.currency,
+            }
+          }));
         } else {
-          console.log("0 o - error");
           this.dispatchEvent(new CustomEvent('error', {
             detail: {
               isOnDOM: true,

@@ -2,16 +2,17 @@
 
 <dom-module id="banco-coreano">
   <template>
-    <style>
+    <style include="shared-module-components">
       :host {
         display: block;
       }
     </style>
-    <h2>Banco Coreano: [[currency]], [[amount]], [[max_amount]]!</h2>
-    <paper-input id="ingresaBCor" label="Ingresa Dinero"></paper-input>
-    <paper-button on-tap="_ingresaDinero">Ingresa Dinero</paper-button>
-    <paper-input id="retiraBCor" label="Retira Dinero"></paper-input>
-    <paper-button on-tap="_retiraDinero">Retira Dinero</paper-button>
+    <iron-image class="example-sizing-cover" sizing="contain" position="left" src="https://upload.wikimedia.org/wikipedia/commons/0/09/Flag_of_South_Korea.svg"></iron-image>
+    <h2 class="h2--general--style">Banco Coreano: [[currency]], [[amount]], [[max_Amount]]!</h2>
+    <paper-input id="ingresaBCor" value="{{ingresaBCor::input}}" label="Ingresa Dinero"></paper-input>
+    <paper-button class="--style--buttoni" class="--style--button" on-tap="_ingresaDinero">Ingresa Dinero</paper-button>
+    <paper-input id="retiraBCor" value="{{retiraBCor::input}}" label="Retira Dinero"></paper-input>
+    <paper-button class="--style--buttonr" on-tap="_retiraDinero">Retira Dinero</paper-button>
   </template>
 
   <script>
@@ -37,7 +38,7 @@
             value: 0,
             notify: true
           },
-          max_amount: {
+          max_Amount: {
             type: Number,
             value: 2000,
             notify: true
@@ -45,28 +46,15 @@
         };
       }
       _ingresaDinero() {
-        console.log(this.max_amount);
-        //console.log(this.$.ingresaBCor.value);
-        if (Math.sign(this.$.ingresaBCor.value) === 1) {
-          if (this.$.ingresaBCor.value <= (this.max_amount - this.amount)) {
-            this.amount += parseInt(this.$.ingresaBCor.value);
-            this.dispatchEvent(new CustomEvent('success', {
-              detail: {
-                isOnDOM: true,
-                message: 'Banco Coreano: se ha ingresado dinero a la cuenta por el monto de: ' + this.$.ingresaBCor.value + ' ' + this.currency,
-              }
-            }));
-          } else {
-            console.log("el maximo monto supera los 2000");
-            this.dispatchEvent(new CustomEvent('error', {
-              detail: {
-                isOnDOM: true,
-                message: 'Banco Coreano: se ha producido un error el máximo monto supera los 2000' + ' ' + this.currency,
-              }
-            }));
-          }
+        if (this.ingresaBCor > 0 && this.ingresaBCor <= (this.max_Amount - this.amount)) {
+          this.amount += parseInt(this.ingresaBCor);
+          this.dispatchEvent(new CustomEvent('success', {
+            detail: {
+              isOnDOM: true,
+              message: 'Banco Coreano: se ha ingresado dinero a la cuenta por el monto de: ' + this.$.ingresaBCor.value + ' ' + this.currency,
+            }
+          }));
         } else {
-          console.log("0 o - error");
           this.dispatchEvent(new CustomEvent('error', {
             detail: {
               isOnDOM: true,
@@ -76,28 +64,15 @@
         }
       }
       _retiraDinero() {
-        console.log(this.amount);
-        //console.log(this.$.retiraBCor.value);
-        if (Math.sign(this.$.retiraBCor.value) === 1) {
-          if (this.$.retiraBCor.value <= this.amount && this.amount > 0) {
-            this.amount -= parseInt(this.$.retiraBCor.value);
-            this.dispatchEvent(new CustomEvent('success', {
-              detail: {
-                isOnDOM: true,
-                message: 'Banco Coreano: se ha retirado dinero a la cuenta por el monto de: ' + this.$.retiraBCor.value + ' ' + this.currency,
-              }
-            }));
-          } else {
-            console.log("el monto supera los 2000")
-            this.dispatchEvent(new CustomEvent('error', {
-              detail: {
-                isOnDOM: true,
-                message: 'Banco Coreano: se ha producido un error no hay suficiente saldo para retirar',
-              }
-            }));
-          }
+        if (this.retiraBCor <= this.amount && this.amount > 0) {
+          this.amount -= parseInt(this.retiraBCor);
+          this.dispatchEvent(new CustomEvent('success', {
+            detail: {
+              isOnDOM: true,
+              message: 'Banco Coreano: se ha retirado dinero a la cuenta por el monto de: ' + this.$.retiraBCor.value + ' ' + this.currency,
+            }
+          }));
         } else {
-          console.log("0 o - error");
           this.dispatchEvent(new CustomEvent('error', {
             detail: {
               isOnDOM: true,

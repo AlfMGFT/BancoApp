@@ -4,26 +4,44 @@
 <link rel="import" href="./banco-japones.html">
 <link rel="import" href="./banco-mexico.html">
 <link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../iron-image/iron-image.html">
 <link rel="import" href="../paper-button/paper-button.html">
-<dom-module id="banco-app">
+<link rel="import" href="./styles-shared.html">
+
+<dom-module id="banco-app" class="--banco-app">
   <template>
-    <style>
+    <style include="shared-module-components">
       :host {
         display: block;
+        background: whitesmoke;
+      }
+
+      banco-chino {
+        background: greenyellow;
+        --color--paperinput: aqua;
+
+        --input-style--ingresa: {
+          background: orange;
+          color: orange;
+        }
       }
     </style>
-    <h2>Bienvenido Alfredo tu numero de cuenta 56581111!</h2>
-    <banco-chino on-success="_addTransaccion" on-error="_addError"></banco-chino>
-    <banco-coreano on-success="_addTransaccion" on-error="_addError"></banco-coreano>
-    <banco-japones on-success="_addTransaccion" on-error="_addError"></banco-japones>
-    <banco-mexico id="events" on-success="_addTransaccion" on-error="_addError"></banco-mexico>
-    <h1>TRANSACCION</h1>
-    <template is="dom-repeat" items="[[transacciones]]">
-      <p>[[item]]</p>
+    <h2>Bienvenido Alfredo tu número de cuenta 56581111!</h2>
+    <banco-chino max-Amount="{{max-Amount}}" currency="{{currency}}" on-success="_addTransaccion" on-error="_addError">
+    </banco-chino>
+    <banco-coreano max-Amount="{{max-Amount}}" currency="{{currency}}" on-success="_addTransaccion"
+      on-error="_addError"></banco-coreano>
+    <banco-japones class="orange" max-Amount="{{max-Amount}}" currency="{{currency}}" on-success="_addTransaccion"
+      on-error="_addError"></banco-japones>
+    <banco-mexico max-Amount="{{max-Amount}}" currency="{{currency}}" id="events" on-success="_addTransaccion"
+      on-error="_addError"></banco-mexico>
+    <h1 class="--style--transaccion">TRANSACCION</h1>
+    <template class="--style--transaccion" is="dom-repeat" items="[[transacciones]]">
+      <p class="--style--transaccion">[[item]]</p>
     </template>
-    <h1>ERROR</h1>
+    <h1 class="--style--error">ERROR</h1>
     <template is="dom-repeat" items="[[error]]">
-      <p>[[item]]</p>
+      <p class="--style--error">[[item]]</p>
     </template>
 
   </template>
@@ -55,24 +73,10 @@
           },
         };
       }
-      /*connectedCallback() {
-        super.connectedCallback();
-        this.$.events.addEventListener('success', e => {
-          console.log(e.detail.message);
-          this.push('transacciones', e.detail.message);
-        })
-        this.$.events.addEventListener('error', e => {
-          console.log(e.detail.message);
-          this.push('error', e.detail.message);
-        })
-
-      }*/
-      _addTransaccion(e){
-        console.log("Event", e.detail);
+      _addTransaccion(e) {
         this.push('transacciones', e.detail.message);
       }
-      _addError(e){
-        console.log("Event", e.detail);
+      _addError(e) {
         this.push('error', e.detail.message);
       }
     }
